@@ -1,9 +1,12 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const code = document.querySelector("#editor");
-    const trigger = document.querySelector(".trigger-btn");
-    code.value = '';
-    let store = {
-        pplrOrderConfiramtion: `{% if line.variant.title != 'Default Title' %}
+document.addEventListener("DOMContentLoaded", () => {
+  const code = document.querySelector("#editor");
+  const trigger = document.querySelector(".trigger-btn");
+  code.value = "";
+
+  // Data store
+  let state = {
+    // find
+    pplrOrderConfiramtion: `{% if line.variant.title != 'Default Title' %}
         <span class="order-list__item-variant">{{ line.variant.title }}</span><br/>
       {% endif %}
       {% for p in line.properties %}   
@@ -36,26 +39,33 @@ document.addEventListener('DOMContentLoaded', () => {
       <br> 
       {% endif %} 
       {% endunless %}{% endfor %}`,
-        orderConfirmationFinder: `{% if line.variant.title != 'Default Title' %}
-        <span class="order-list__item-variant">{{ line.variant.title }}</span><br/>
-      {% endif %}`,
-        userInput: ``,
+    // replace with
+    orderConfirmationFinder:
+      /{% if line\.variant\.title != 'Default Title' %}\s*<span class="order-list__item-variant">{{ line\.variant\.title }}<\/span><br\/>\s*{% endif %}/gim,
+    // user pasted code
+    userInput: ``,
+  };
+  // https://jsfiddle.net/x7f6bgda/5/
+  //   // Inject the code
+  const injectCode = () => {
+    if (code.value !== "") {
+      state.userInput = code.value.toString();
+      let replaced = state.userInput.replace(
+        state.orderConfirmationFinder,
+        state.pplrOrderConfiramtion
+      );
+      code.value = replaced;
+      console.log(replaced);
+    } else {
+      console.log("please paste your email template");
     }
+  };
 
-
-    // Inject the code
-    const injectCode = () => {
-      if(code.value !== '') {
-        store.userInput = code.value;
-        // console.log(store.userInput);
-        // store.userInput.replace(store.orderConfirmationFinder , store.pplrOrderConfiramtion);
-        let result = store.userInput.search(store.orderConfirmationFinder);
-        console.log(store.userInput);
-      } else {
-        console.log("please paste your shopify email template")
-      }
-    }
-
-    // Check if the button is clicked
-    trigger.addEventListener('click' , injectCode);
+  // Check if the button is clicked
+  trigger.addEventListener("click", injectCode);
+  console.log(typeof state.pplrOrderConfiramtion);
 });
+
+// let string = "ABC";
+// let newString = string.repeat(A , D);
+// DBC
