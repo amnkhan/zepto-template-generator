@@ -33,7 +33,7 @@ body {
   box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
   -webkit-appearance: none;
   border: 0;
-  background-color: #9cb0c9;
+  background-color: #ddd;
   border-radius: 4px;
 }
 
@@ -81,6 +81,6 @@ body {
     max-height: 250px;
   }
   .button-wrapper {
-    margin-top: 20px;
+    margin-top: 10px;
   }
 }
