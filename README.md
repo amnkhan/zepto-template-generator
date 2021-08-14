@@ -1,4 +1,4 @@
-![zepto-template-generator](https://i.ibb.co/N7Zvf6P/Capture.png)
+![zepto-template-generator](https://cdn.shopify.com/s/files/1/0579/6197/1870/files/Capture.png?v=1628975188)
 
 # Zepto Template Generator
 
