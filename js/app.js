@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
+  // global variables
   let form = document.querySelector(".template-form");
   let textarea = document.querySelector(".editor-textarea");
   let select = document.querySelector("#select-template");
@@ -14,6 +15,27 @@ document.addEventListener("DOMContentLoaded", () => {
       feedback.style.display = "none";
     }, 5000);
   }
+
+  // generator function
+  function generator(object, text) {
+    object.value = textarea.value.toString();
+    let value = object.value;
+    let regex = object.search;
+    let replace = object.replace;
+
+    // check if its a order template
+    if (value.match(regex) != null) {
+      let replaced = value.replace(regex, replace);
+      textarea.value = replaced;
+      showFeedback(
+        "alert-success",
+        "😀 Sucessfull added Product Personalizer code"
+      );
+    } else {
+      showFeedback("alert-danger", `😞 Not a ${text} template`);
+    }
+  }
+
   // Data store
   let state = {
     // order confirmation
@@ -55,30 +77,74 @@ document.addEventListener("DOMContentLoaded", () => {
       {% endif %} 
       <br> 
       {% endif %} 
-      {% endunless %}{% endfor %}
+      {% endunless %}
+      {% endfor %}
       `,
-      alreadyExist: /{% for p in line\.properties %}/gim,
     },
     // packing slip
     packingSlip: {
       value: ``,
-      search: ``,
-      replace: ``,
+      search:
+        /{% if line_item\.sku != blank %}\s*<span class="line-item-description-line">\s*{{ line_item\.sku }}\s*<\/span>\s*{% endif %}/gim,
+      replace: `
+        {% if line_item.sku != blank %}
+        <span class="line-item-description-line">
+          {{ line_item.sku }}
+        </span>
+        {% endif %}
+        
+        {% for p in line_item.properties %}
+        {% assign hidden_property = p.first | first | replace: '_', true %}
+        {% unless p.last == blank %}
+        {% if hidden_property == 'true' %}
+        {% else %}
+        {{ p.first }}:
+        {% if p.last contains '/uploads/' or p.last contains '/assets/' or p.last contains '/products/' %}
+        <img style="width:50px;height:auto" src="{{ p.last }}"/>{% else %}{{ p.last | newline_to_br }}
+        {% endif %}  
+        <br> 
+        {% endif %}
+        {% endunless %}
+        {% endfor %}
+      `,
     },
-  };
-
-  const injectCode = () => {
-    if (code.value !== "") {
-      state.userInput = code.value.toString();
-      let replaced = state.userInput.replace(
-        state.orderConfirmationFinder,
-        state.pplrOrderConfiramtion
-      );
-      code.value = replaced;
-      console.log(replaced);
-    } else {
-      console.log("please paste your email template");
-    }
+    // fulfilment template
+    fulfilment: {
+      value: ``,
+      search: /<p>\s*Variant Title:\s*{{ line\.line_item\.title }}\s*<\/p>/gim,
+      replace: `
+      <p>Variant Title: {{ line.line_item.title }}</p>
+      {% for p in line.line_item.properties %}   
+      {% assign hidden_property = p.first | first | replace: '_', true %}
+      {% unless p.last == blank %} 
+      {% if p.first contains 'pdf' %}
+      {% assign hidden_property = false%}
+      {% assign p.first = p.first | replace: '_' %}
+      {% endif %} 
+      {% if hidden_property == 'true' %} 
+      <span style="display:none;" class="product-personalizer-line-item-prop" data-prop-name="{{ p.first }}">{{ p.first }}: {{ p.last }}
+      </span> 
+      {% else %} 
+      {{ p.first | replace: '_'}}: 
+      {% if p.last contains '/uploads/' or p.last contains '/assets/' or p.last contains '/products/' %} 
+      {% assign format = 'jpg' %}
+      {% if p.last contains 'png' %}
+      {% assign format = 'png' %}
+      {% endif %}
+      {% if p.last contains 'pdf' %}
+      {% assign format = 'pdf' %}
+      {% endif %}
+      <a target="_blank"  href="{{ p.last }}?format={{ format }}" src="{{ p.last }}?format={{ format }}" class="jslghtbx-thmb" data-jslghtbx download>Download {{ format }} file
+      </a> 
+      {% else %} 
+      {{ p.last | newline_to_br }} 
+      {% endif %} 
+      <br> 
+      {% endif %} 
+      {% endunless %}
+      {% endfor %}
+      `,
+    },
   };
 
   form.addEventListener("submit", function (e) {
@@ -87,31 +153,15 @@ document.addEventListener("DOMContentLoaded", () => {
     if (textarea.value !== "") {
       // order confirmation
       if (select.value == "order-confirmation") {
-        state.orderConfirmation.value = textarea.value.toString();
-        let value = state.orderConfirmation.value;
-        let regex = state.orderConfirmation.search;
-        let replace = state.orderConfirmation.replace;
-        let exist = state.orderConfirmation.alreadyExist;
-
-        // check if its a order template
-        if (value.match(regex) != null) {
-          let replaced = value.replace(regex, replace);
-          textarea.value = replaced;
-          showFeedback(
-            "alert-success",
-            "😀 Sucessfull added product personalizer code"
-          );
-        } else {
-          showFeedback("alert-danger", "😞 Not a Order Confirmation template");
-        }
+        generator(state.orderConfirmation, "order confirmation");
       }
       // packing slip
       if (select.value == "packing-slip") {
-        console.log("You have selected order packing-slip template");
+        generator(state.packingSlip, "packing slip");
       }
-      // shipping confirmation
-      if (select.value == "shipping-confirmation") {
-        console.log("You have selected order shipping-confirmation template");
+      // fulfillment confirmation
+      if (select.value == "fulfillment-confirmation") {
+        generator(state.fulfilment, "fulfilment template");
       }
     } else {
       showFeedback("alert-danger", "Please paste your template.");
