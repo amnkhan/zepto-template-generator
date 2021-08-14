@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
     setTimeout(function () {
       feedback.classList.remove(className);
       feedback.style.display = "none";
-    }, 5000);
+    }, 8000);
   }
 
   // generator function
