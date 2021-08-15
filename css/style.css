@@ -1,3 +1,4 @@
+/* Josefin Sans */
 @import url("https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;500&display=swap");
 
 * {
@@ -35,6 +36,7 @@ body {
   border: 0;
   background-color: #ddd;
   border-radius: 4px;
+  padding: 20px;
 }
 
 .submit-button {
@@ -67,20 +69,25 @@ body {
   background-color: #ddd;
   padding: 8px 10px;
 }
-.template-form .form-label {
-  font-size: 16px;
+.heading {
+  font-size: 18px;
   letter-spacing: 0.6px;
 }
 
+/* Mobile only CSS */
 @media only screen and (max-width: 480px) {
   .main-section {
-    padding: 30px 0;
+    padding: 20px 0;
   }
   .editor-textarea {
     min-height: 250px;
     max-height: 250px;
+    padding: 10px;
   }
   .button-wrapper {
     margin-top: 10px;
+  }
+  .heading {
+    font-size: 14px;
   }
 }

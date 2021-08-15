@@ -13,26 +13,26 @@ document.addEventListener("DOMContentLoaded", () => {
     setTimeout(function () {
       feedback.classList.remove(className);
       feedback.style.display = "none";
-    }, 8000);
+    }, 6000);
   }
 
   // generator function
-  function generator(object, text) {
-    object.value = textarea.value.toString();
-    let value = object.value;
-    let regex = object.search;
-    let replace = object.replace;
+  function generator(template, name) {
+    template.value = textarea.value.toString();
+    let value = template.value;
+    let regex = template.search;
+    let replace = template.replace;
 
-    // check if its a order template
+    // check if its a valid template
     if (value.match(regex) != null) {
       let replaced = value.replace(regex, replace);
       textarea.value = replaced;
       showFeedback(
         "alert-success",
-        "😀 Sucessfull added Product Personalizer code"
+        "✌ Sucessfully added Product Personalizer code"
       );
     } else {
-      showFeedback("alert-danger", `😞 Not a ${text} template`);
+      showFeedback("alert-danger", `😞 Sorry, not a ${name} template`);
     }
   }
 
@@ -147,6 +147,7 @@ document.addEventListener("DOMContentLoaded", () => {
     },
   };
 
+  // Check when the form is submitted
   form.addEventListener("submit", function (e) {
     e.preventDefault();
     // check if the textarea value is empty
@@ -161,7 +162,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       // fulfillment confirmation
       if (select.value == "fulfillment-confirmation") {
-        generator(state.fulfilment, "fulfilment template");
+        generator(state.fulfilment, "fulfilment");
       }
     } else {
       showFeedback("alert-danger", "Please paste your template.");
