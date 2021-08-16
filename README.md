@@ -12,10 +12,10 @@ visit https://zepto-template-generator.vercel.app/
 
 ---
 
-[ ] ✅ Order Confirmation Template generator
-[ ] ✅ Packing Slip Template generator
-[ ] ✅ Fulfilment template generator
-[ ] ✅ Error handling - Shows error if anything is wrong
+- [x] ✅ Order Confirmation Template generator
+- [x] ✅ Packing Slip Template generator
+- [x] ✅ Fulfilment template generator
+- [x] ✅ Error handling - Shows error if anything is wrong
 
 ## How to use:
 
