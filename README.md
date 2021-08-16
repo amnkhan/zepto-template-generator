@@ -12,21 +12,21 @@ visit https://zepto-template-generator.vercel.app/
 
 ---
 
-- [x] ✅ Order Confirmation Template generator
-- [x] ✅ Packing Slip Template generator
-- [x] ✅ Fulfilment template generator
-- [x] ✅ Error handling - Shows error if anything is wrong
+- ✅ Order Confirmation Template generator
+- ✅ Packing Slip Template generator
+- ✅ Fulfilment template generator
+- ✅ Error handling - Shows error if anything is wrong
 
 ## How to use:
 
 ---
 
-1️⃣ Copy your desired email template from Shopify
-2️⃣ Paste yout email template code
-3️⃣ Select your template type
-4️⃣ Click on Generate button
-5️⃣ You are done 😎
-6️⃣ Now copy the code and use on Shopify 🤘🤘
+- 1️⃣ Copy your desired email template from Shopify
+- 2️⃣ Paste yout email template code
+- 3️⃣ Select your template type
+- 4️⃣ Click on Generate button
+- 5️⃣ You are done 😎
+- 6️⃣ Now copy the code and use on Shopify 🤘🤘
 
 [pplr]: https://www.productpersonalizer.com/
 [screenshot-url]: https://cdn.shopify.com/s/files/1/0579/6197/1870/files/Capture.png?v=1628975188
