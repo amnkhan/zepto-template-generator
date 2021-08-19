@@ -145,6 +145,51 @@ document.addEventListener("DOMContentLoaded", () => {
       {% endfor %}
       `,
     },
+    // New order confirmation
+    newOrderConfirmation: {
+      value: ``,
+      search:
+        /{% if line\.variant\.title != 'Default Title' %}\s*<span class="order-list__item-variant">\s*{{ line\.variant\.title }}\s*<\/span>\s*{% if line\.sku != blank %}\s*<span class="order-list__item-variant">• \s*<\/span>\s*{% endif %}\s*{% endif %}/gim,
+      replace: `
+      {% if line.variant.title != 'Default Title' %}
+      <span class="order-list__item-variant">{{ line.variant.title }}
+      </span>
+      {% if line.sku != blank %}
+      <span class="order-list__item-variant">• 
+      </span>
+      {% endif %}
+      {% endif %}
+      {% for p in line.properties %}   
+      {% assign hidden_property = p.first | first | replace: '_', true %}
+      {% unless p.last == blank %} 
+      {% if p.first contains 'pdf' %}
+      {% assign hidden_property = false%}
+      {% assign p.first = p.first | replace: '_' %}
+      {% endif %} 
+      {% if hidden_property == 'true' %} 
+      <span style="display:none;" class="product-personalizer-line-item-prop" data-prop-name="{{ p.first }}">{{ p.first }}: {{ p.last }}
+      </span> 
+      {% else %} 
+      {{ p.first | replace: '_'}}: 
+      {% if p.last contains '/uploads/' or p.last contains '/assets/' or p.last contains '/products/' %} 
+      {% assign format = 'jpg' %}
+      {% if p.last contains 'png' %}
+      {% assign format = 'png' %}
+      {% endif %}
+      {% if p.last contains 'pdf' %}
+      {% assign format = 'pdf' %}
+      {% endif %}
+      <a target="_blank"  href="{{ p.last }}?format={{ format }}" src="{{ p.last }}?format={{ format }}" class="jslghtbx-thmb" data-jslghtbx download>Download {{ format }} file
+      </a> 
+      {% else %} 
+      {{ p.last | newline_to_br }} 
+      {% endif %} 
+      <br> 
+      {% endif %} 
+      {% endunless %}
+      {% endfor %}
+      `,
+    },
   };
 
   // Check when the form is submitted
@@ -155,6 +200,10 @@ document.addEventListener("DOMContentLoaded", () => {
       // order confirmation
       if (select.value == "order-confirmation") {
         generator(state.orderConfirmation, "order confirmation");
+      }
+      // new order confirmation
+      if (select.value == "new-order-confirmation") {
+        generator(state.newOrderConfirmation, "new order confirmation");
       }
       // packing slip
       if (select.value == "packing-slip") {
