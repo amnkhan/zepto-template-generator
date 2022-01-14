@@ -190,6 +190,46 @@ document.addEventListener("DOMContentLoaded", () => {
       {% endfor %}
       `,
     },
+    shippingConfirmation: {
+      value: ``,
+      search:
+        /{% if line\.line_item\.variant\.title != 'Default Title' %}\s*<span class="order-list__item-variant">\s*{{ line\.line_item\.variant\.title }}\s*<\/span>\s*<br\/>\s*{% endif %}/gim,
+      replace: `
+      {% if line.line_item.variant.title != 'Default Title' %}
+        <span class="order-list__item-variant">{{ line.line_item.variant.title }}</span><br/>
+      {% endif %}
+
+      {% for p in line.line_item.properties %}   
+        {% assign hidden_property = p.first | first | replace: '_', true %}
+        {% unless p.last == blank %} 
+        {% if p.first contains 'pdf' %}
+        {% assign hidden_property = false%}
+        {% assign p.first = p.first | replace: '_' %}
+        {% endif %} 
+        {% if hidden_property == 'true' %} 
+        <span style="display:none;" class="product-personalizer-line-item-prop" data-prop-name="{{ p.first }}">{{ p.first }}: {{ p.last }}
+        </span> 
+        {% else %} 
+        {{ p.first | replace: '_'}}: 
+        {% if p.last contains '/uploads/' or p.last contains '/assets/' or p.last contains '/products/' %} 
+        {% assign format = 'jpg' %}
+        {% if p.last contains 'png' %}
+        {% assign format = 'png' %}
+        {% endif %}
+        {% if p.last contains 'pdf' %}
+        {% assign format = 'pdf' %}
+        {% endif %}
+        <a target="_blank"  href="{{ p.last }}?format={{ format }}" src="{{ p.last }}?format={{ format }}" class="jslghtbx-thmb" data-jslghtbx download>Download {{ format }} file
+        </a> 
+        {% else %} 
+        {{ p.last | newline_to_br }} 
+        {% endif %} 
+        <br> 
+        {% endif %} 
+        {% endunless %}
+      {% endfor %}
+      `,
+    },
   };
 
   // Check when the form is submitted
@@ -212,6 +252,10 @@ document.addEventListener("DOMContentLoaded", () => {
       // fulfillment confirmation
       if (select.value == "fulfillment-confirmation") {
         generator(state.fulfilment, "fulfilment");
+      }
+      // shipping confirmation
+      if (select.value == "shipping-confirmation") {
+        generator(state.shippingConfirmation, "shipping confirmation");
       }
     } else {
       showFeedback("alert-danger", "Please paste your template.");
